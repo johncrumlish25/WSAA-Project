@@ -36,6 +36,19 @@ def add_player():
     players.append(new_player)  # add to list
     return jsonify(new_player)  # return new player
 
+# Update players (UPDATE)
+@app.route('/players/<int:id>', methods=['PUT'])  
+def update_player(id):
+    data = request.get_json()  # get JSON data
+
+    for player in players:
+        if player["id"] == id:
+            player["name"] = data["name"]
+            player["goals"] = data["goals"]
+            return jsonify(player)  # return updated player
+
+    return jsonify({"error": "Player not found"})  # if id not found
+
 # Run app
 if __name__ == '__main__':
     app.run(debug=True)
