@@ -36,7 +36,7 @@ def add_player():
     players.append(new_player)  # add to list
     return jsonify(new_player)  # return new player
 
-# Update players (UPDATE)
+# Update player (UPDATE)
 @app.route('/players/<int:id>', methods=['PUT'])  
 def update_player(id):
     data = request.get_json()  # get JSON data
@@ -47,7 +47,17 @@ def update_player(id):
             player["goals"] = data["goals"]
             return jsonify(player)  # return updated player
 
-    return jsonify({"error": "Player not found"})  # if id not found
+    return jsonify({"error": "Player not found"})  # if ID not found
+
+# Delete player (DELETE)
+@app.route('/players/<int:id>', methods=['DELETE']) 
+def delete_player(id):
+    for player in players:
+        if player["id"] == id:
+            players.remove(player)  # remove player
+            return jsonify({"message": "Player deleted"})
+
+    return jsonify({"error": "Player not found"}) # if ID not found
 
 # Run app
 if __name__ == '__main__':
