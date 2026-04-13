@@ -54,19 +54,30 @@ def get_players():
 
     return jsonify(players) # return JSON response
 
-# add new player (CREATE)
-@app.route('/players', methods=['POST']) 
+# add new player to DB (CREATE)
+@app.route('/players', methods=['POST'])
 def add_player():
-    data = request.get_json()  # get data from request
+    data = request.get_json()  # get JSON data
 
-    new_player = {             # new player data
-        "id": len(players) + 1,
+    conn = sqlite3.connect('database.db')  # connect DB
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "INSERT INTO players (name, goals) VALUES (?, ?)",  # insert player
+        (data["name"], data["goals"])
+    )
+
+    conn.commit()  # save changes
+
+    new_id = cursor.lastrowid  # get new ID
+
+    conn.close()  # close DB
+
+    return jsonify({
+        "id": new_id,
         "name": data["name"],
         "goals": data["goals"]
-    }
-
-    players.append(new_player)  # add to list
-    return jsonify(new_player)  # return new player
+    })
 
 # update player (UPDATE)
 @app.route('/players/<int:id>', methods=['PUT'])  
