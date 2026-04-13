@@ -1,7 +1,7 @@
 # Flask App
 # Author: John Crumlish
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 import sqlite3  # database
 
 def init_db():
@@ -25,7 +25,7 @@ app = Flask(__name__)
 # home route
 @app.route('/')
 def home():
-    return "Project Running"
+    return render_template('index.html')
 
 # get players from DB (READ)
 @app.route('/players', methods=['GET'])  

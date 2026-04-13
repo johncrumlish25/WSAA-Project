@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Players</title>
+</head>
+<body>
+
+<h1>Football Players</h1>
+
+<ul id="player-list"></ul>
+
+<h2>Add Player</h2>
+<input type="text" id="name" placeholder="Name">
+<input type="number" id="goals" placeholder="Goals">
+<button onclick="addPlayer()">Add Player</button>
+
+<script>
+async function loadPlayers() {
+    const response = await fetch('/players');
+    const players = await response.json();
+
+    const list = document.getElementById('player-list');
+    list.innerHTML = '';
+
+    players.forEach(player => {
+        const li = document.createElement('li');
+        li.textContent = player.name + " - Goals: " + player.goals;
+        list.appendChild(li);
+    });
+}
+
+async function addPlayer() {
+    const name = document.getElementById('name').value;
+    const goals = document.getElementById('goals').value;
+
+    await fetch('/players', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name, goals })
+    });
+
+    loadPlayers();
+}
+
+loadPlayers();
+</script>
+
+</body>
+</html>
