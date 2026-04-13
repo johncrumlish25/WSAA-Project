@@ -24,7 +24,21 @@ async function loadPlayers() {
 
     players.forEach(player => {
         const li = document.createElement('li');
-        li.textContent = player.name + " - Goals: " + player.goals;
+
+        li.textContent = player.name + " - Goals: " + player.goals + "  ";
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = "Delete";
+
+        deleteBtn.onclick = async () => {
+            await fetch('/players/' + player.id, {
+                method: 'DELETE'
+            });
+
+            loadPlayers();  // refresh list
+        };
+
+        li.appendChild(deleteBtn);
         list.appendChild(li);
     });
 }
@@ -42,9 +56,13 @@ async function addPlayer() {
     });
 
     loadPlayers();
+
+    // clear inputs after adding
+    document.getElementById('name').value = "";
+    document.getElementById('goals').value = "";
 }
 
-loadPlayers();
+loadPlayers();  // load players on page start
 </script>
 
 </body>
