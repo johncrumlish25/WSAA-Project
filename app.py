@@ -79,18 +79,28 @@ def add_player():
         "goals": data["goals"]
     })
 
-# update player (UPDATE)
-@app.route('/players/<int:id>', methods=['PUT'])  
+# update player in DB (UPDATE)
+@app.route('/players/<int:id>', methods=['PUT'])
 def update_player(id):
     data = request.get_json()  # get JSON data
 
-    for player in players:
-        if player["id"] == id:
-            player["name"] = data["name"]
-            player["goals"] = data["goals"]
-            return jsonify(player)  # return updated player
+    conn = sqlite3.connect('database.db')  # connect DB
+    cursor = conn.cursor()
 
-    return jsonify({"error": "Player not found"})  # if ID not found
+    cursor.execute(
+        "UPDATE players SET name = ?, goals = ? WHERE id = ?",
+        (data["name"], data["goals"], id)
+    )
+
+    conn.commit()  # save changes
+
+    conn.close()  # close DB
+
+    return jsonify({  # return updated player data
+        "id": id,
+        "name": data["name"],
+        "goals": data["goals"]
+    })
 
 # delete player (DELETE)
 @app.route('/players/<int:id>', methods=['DELETE']) 
