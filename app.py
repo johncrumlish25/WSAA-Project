@@ -103,14 +103,21 @@ def update_player(id):
     })
 
 # delete player (DELETE)
-@app.route('/players/<int:id>', methods=['DELETE']) 
+@app.route('/players/<int:id>', methods=['DELETE'])
 def delete_player(id):
-    for player in players:
-        if player["id"] == id:
-            players.remove(player)  # remove player
-            return jsonify({"message": "Player deleted"})
+    conn = sqlite3.connect('database.db')  # connect DB
+    cursor = conn.cursor()
 
-    return jsonify({"error": "Player not found"}) # if ID not found
+    cursor.execute(
+        "DELETE FROM players WHERE id = ?",  # delete row
+        (id,)
+    )
+
+    conn.commit()  # save changes
+
+    conn.close()  # close DB
+
+    return jsonify({"message": "Player deleted"})  # confirmation
 
 # run app
 if __name__ == '__main__':
