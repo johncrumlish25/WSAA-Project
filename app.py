@@ -22,12 +22,6 @@ def init_db():
 # create app
 app = Flask(__name__)
 
-# sample data
-players = [  
-    {"id": 1, "name": "Lionel Messi", "goals": 900},
-    {"id": 2, "name": "Cristiano Ronaldo", "goals": 950}
-]
-
 # home route
 @app.route('/')
 def home():
