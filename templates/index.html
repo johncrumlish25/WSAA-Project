@@ -22,25 +22,50 @@ async function loadPlayers() {
     const list = document.getElementById('player-list');
     list.innerHTML = '';
 
-    players.forEach(player => {
-        const li = document.createElement('li');
+players.forEach(player => {
+    const li = document.createElement('li');
 
-        li.textContent = player.name + " - Goals: " + player.goals + "  ";
+    li.textContent = player.name + " - Goals: " + player.goals + "  ";
 
-        const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = "Delete";
+    // DELETE BUTTON
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = "Delete";
 
-        deleteBtn.onclick = async () => {
+    deleteBtn.onclick = async () => {
+        await fetch('/players/' + player.id, {
+            method: 'DELETE'
+        });
+        loadPlayers();
+    };
+
+    // UPDATE BUTTON
+    const updateBtn = document.createElement('button');
+    updateBtn.textContent = "Edit";
+
+    updateBtn.onclick = async () => {
+        const newName = prompt("Enter new name:", player.name);
+        const newGoals = prompt("Enter new goals:", player.goals);
+
+        if (newName && newGoals) {
             await fetch('/players/' + player.id, {
-                method: 'DELETE'
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: newName,
+                    goals: parseInt(newGoals)
+                })
             });
 
             loadPlayers();  // refresh list
-        };
+        }
+    };
 
-        li.appendChild(deleteBtn);
-        list.appendChild(li);
-    });
+    li.appendChild(updateBtn);
+    li.appendChild(deleteBtn);
+    list.appendChild(li);
+});
 }
 
 async function addPlayer() {
