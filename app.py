@@ -8,7 +8,7 @@ def init_db():
     conn = sqlite3.connect('database.db')  # create/connect DB
     cursor = conn.cursor()
 
-    cursor.execute('''
+    cursor.execute('''   
         CREATE TABLE IF NOT EXISTS players (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
@@ -33,10 +33,26 @@ players = [
 def home():
     return "Project Running"
 
-# API route to get all players (READ)
-@app.route('/players', methods=['GET'])
+# get players from DB (READ)
+@app.route('/players', methods=['GET'])  
 def get_players():
-    return jsonify(players)  # return data as JSON
+    conn = sqlite3.connect('database.db')  # connect DB
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM players")  # query table
+    rows = cursor.fetchall() # fetch all results
+
+    conn.close() # close connection
+
+    players = []  # convert to JSON
+    for row in rows:
+        players.append({
+            "id": row[0],
+            "name": row[1],
+            "goals": row[2]
+        })
+
+    return jsonify(players) # return JSON response
 
 # add new player (CREATE)
 @app.route('/players', methods=['POST']) 
