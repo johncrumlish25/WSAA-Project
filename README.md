@@ -28,19 +28,19 @@ wsaa-project/
 │   └── index.html
 
 ## How to Run the Project
-# 1. Clone the repository
+##### 1. Clone the repository
 git clone https://github.com/johncrumlish25/WSAA-Project.git
 
-# 2. Navigate into the project folder
+##### 2. Navigate into the project folder
 cd WSAA-Project
 
-# 3. Install Flask
+##### 3. Install Flask
 pip install flask
 
-# 4. Run the application
+##### 4. Run the application
 python app.py
 
-# 5. Open in browser
+##### 5. Open in browser
 http://127.0.0.1:5000/
 
 ## Notes
