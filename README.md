@@ -20,12 +20,12 @@ The application allows users to perform CRUD (Create, Read, Update, Delete) oper
 - Bootstrap
 
 ## Project Structure
-wsaa-project/
-│── app.py
-│── database.db (ignored in Git)
-│── README.md
-├── templates/
-│   └── index.html
+
+- app.py  
+- database.db (ignored in Git)  
+- README.md  
+- templates/
+  - index.html  
 
 ## How to Run the Project
 ##### 1. Clone the repository
