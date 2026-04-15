@@ -1,4 +1,6 @@
 # WSAA Project – Football Players API
+
+## Overview
 This project is a Flask web application that demonstrates the creation and use of a RESTful API.
 The application allows users to perform CRUD (Create, Read, Update, Delete) operations on a list of football players and their goal statistics.
 
@@ -21,10 +23,10 @@ The application allows users to perform CRUD (Create, Read, Update, Delete) oper
 
 ## Project Structure
 
-- app.py  
-- database.db (ignored in Git)  
-- README.md  
-- templates/
+- **app.py**  
+- **database.db** (ignored in Git)  
+- **README.md** 
+- **templates/**
   - index.html  
 
 ## How to Run the Project
