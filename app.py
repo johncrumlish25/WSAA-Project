@@ -114,6 +114,7 @@ def delete_player(id):
     return jsonify({"message": "Player deleted"})  # confirmation
 
 # run app
+init_db()  # create database when app starts
+
 if __name__ == '__main__':
-    init_db()  # create table if not exists
     app.run(debug=True)
