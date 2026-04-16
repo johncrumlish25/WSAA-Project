@@ -33,16 +33,24 @@ def home():
 # get players from DB (READ)
 @app.route('/players', methods=['GET'])  
 def get_players():
-    init_db()
-    conn = sqlite3.connect(DB_PATH)  # connect DB
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM players")  # query table
-    rows = cursor.fetchall() # fetch all results
+    # FORCE create table every time
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS players (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            goals INTEGER NOT NULL
+        )
+    ''')
 
-    conn.close() # close connection
+    cursor.execute("SELECT * FROM players")
+    rows = cursor.fetchall()
 
-    players = []  # convert to JSON
+    conn.close()
+
+    players = []
     for row in rows:
         players.append({
             "id": row[0],
@@ -55,22 +63,30 @@ def get_players():
 # add new player to DB (CREATE)
 @app.route('/players', methods=['POST'])
 def add_player():
-    init_db()
-    data = request.get_json(force=True)  # get JSON data
+    data = request.get_json(force=True)
 
-    conn = sqlite3.connect(DB_PATH)  # connect DB
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS players (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            goals INTEGER NOT NULL
+        )
+    ''')
+
+    # existing insert
     cursor.execute(
-        "INSERT INTO players (name, goals) VALUES (?, ?)",  # insert player
+        "INSERT INTO players (name, goals) VALUES (?, ?)",
         (data["name"], data["goals"])
     )
 
-    conn.commit()  # save changes
+    conn.commit()
 
-    new_id = cursor.lastrowid  # get new ID
+    new_id = cursor.lastrowid
 
-    conn.close()  # close DB
+    conn.close()
 
     return jsonify({
         "id": new_id,
