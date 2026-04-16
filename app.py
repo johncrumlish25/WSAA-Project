@@ -1,12 +1,13 @@
 # Flask App
 # Author: John Crumlish
 
+import os
 from flask import Flask, jsonify, request, render_template
+import sqlite3  # database
+
+DB_PATH = "/home/johncrumlish/WSAA-Project/database.db"
 
 app = Flask(__name__)
-
-# Temporary in-memory storage
-players = []
 
 # Home route
 @app.route('/')
@@ -81,23 +82,38 @@ def add_player():
 def update_player(id):
     data = request.get_json(force=True)
 
-    for player in players:
-        if player["id"] == id:
-            player["name"] = data["name"]
-            player["goals"] = data["goals"]
-            return jsonify(player)
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
 
-    return jsonify({"error": "Player not found"})
+    cursor.execute(
+        "UPDATE players SET name = ?, goals = ? WHERE id = ?",
+        (data["name"], data["goals"], id)
+    )
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({
+        "id": id,
+        "name": data["name"],
+        "goals": data["goals"]
+    })
 
 # DELETE player
 @app.route('/players/<int:id>', methods=['DELETE'])
 def delete_player(id):
-    for player in players:
-        if player["id"] == id:
-            players.remove(player)
-            return jsonify({"message": "Player deleted"})
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
 
-    return jsonify({"error": "Player not found"})
+    cursor.execute(
+        "DELETE FROM players WHERE id = ?",
+        (id,)
+    )
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"message": "Player deleted"})
 
 if __name__ == '__main__':
     app.run(debug=True)
