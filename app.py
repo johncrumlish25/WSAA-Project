@@ -20,7 +20,6 @@ def get_players():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    # create table every time (guaranteed fix)
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS players (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -28,6 +27,8 @@ def get_players():
             goals INTEGER NOT NULL
         )
     ''')
+
+    conn.commit() 
 
     cursor.execute("SELECT * FROM players")
     rows = cursor.fetchall()
@@ -52,7 +53,7 @@ def add_player():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    # ensure table exists
+    # CREATE TABLE FIRST
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS players (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -60,6 +61,8 @@ def add_player():
             goals INTEGER NOT NULL
         )
     ''')
+
+    conn.commit() 
 
     cursor.execute(
         "INSERT INTO players (name, goals) VALUES (?, ?)",
