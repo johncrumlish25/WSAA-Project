@@ -48,14 +48,33 @@ def get_players():
 def add_player():
     data = request.get_json(force=True)
 
-    new_player = {
-        "id": len(players) + 1,
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    # ensure table exists
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS players (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            goals INTEGER NOT NULL
+        )
+    ''')
+
+    cursor.execute(
+        "INSERT INTO players (name, goals) VALUES (?, ?)",
+        (data["name"], data["goals"])
+    )
+
+    conn.commit()
+
+    new_id = cursor.lastrowid
+    conn.close()
+
+    return jsonify({
+        "id": new_id,
         "name": data["name"],
         "goals": data["goals"]
-    }
-
-    players.append(new_player)
-    return jsonify(new_player)
+    })
 
 # UPDATE player
 @app.route('/players/<int:id>', methods=['PUT'])
