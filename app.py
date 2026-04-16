@@ -56,7 +56,7 @@ def get_players():
 @app.route('/players', methods=['POST'])
 def add_player():
     init_db()
-    data = request.get_json()  # get JSON data
+    data = request.get_json(force=True)  # get JSON data
 
     conn = sqlite3.connect(DB_PATH)  # connect DB
     cursor = conn.cursor()
@@ -82,7 +82,7 @@ def add_player():
 @app.route('/players/<int:id>', methods=['PUT'])
 def update_player(id):
     init_db()
-    data = request.get_json()  # get JSON data
+    data = request.get_json(force=True)  # get JSON data
 
     conn = sqlite3.connect(DB_PATH)  # connect DB
     cursor = conn.cursor()
