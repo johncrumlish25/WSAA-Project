@@ -5,7 +5,7 @@ from flask import Flask, jsonify, request, render_template
 import sqlite3  # database
 
 def init_db():
-    conn = sqlite3.connect('database.db')  # create/connect DB
+    conn = sqlite3.connect('/home/johncrumlish/WSAA-Project/database.db')
     cursor = conn.cursor()
 
     cursor.execute('''   
@@ -30,7 +30,7 @@ def home():
 # get players from DB (READ)
 @app.route('/players', methods=['GET'])  
 def get_players():
-    conn = sqlite3.connect('database.db')  # connect DB
+    conn = sqlite3.connect('/home/johncrumlish/WSAA-Project/database.db')  # connect DB
     cursor = conn.cursor()
 
     cursor.execute("SELECT * FROM players")  # query table
@@ -53,7 +53,7 @@ def get_players():
 def add_player():
     data = request.get_json()  # get JSON data
 
-    conn = sqlite3.connect('database.db')  # connect DB
+    conn = sqlite3.connect('/home/johncrumlish/WSAA-Project/database.db')  # connect DB
     cursor = conn.cursor()
 
     cursor.execute(
@@ -78,7 +78,7 @@ def add_player():
 def update_player(id):
     data = request.get_json()  # get JSON data
 
-    conn = sqlite3.connect('database.db')  # connect DB
+    conn = sqlite3.connect('/home/johncrumlish/WSAA-Project/database.db')  # connect DB
     cursor = conn.cursor()
 
     cursor.execute(
@@ -99,7 +99,7 @@ def update_player(id):
 # delete player (DELETE)
 @app.route('/players/<int:id>', methods=['DELETE'])
 def delete_player(id):
-    conn = sqlite3.connect('database.db')  # connect DB
+    conn = sqlite3.connect('/home/johncrumlish/WSAA-Project/database.db')  # connect DB
     cursor = conn.cursor()
 
     cursor.execute(
