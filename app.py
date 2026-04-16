@@ -33,6 +33,7 @@ def home():
 # get players from DB (READ)
 @app.route('/players', methods=['GET'])  
 def get_players():
+    init_db()
     conn = sqlite3.connect(DB_PATH)  # connect DB
     cursor = conn.cursor()
 
@@ -54,6 +55,7 @@ def get_players():
 # add new player to DB (CREATE)
 @app.route('/players', methods=['POST'])
 def add_player():
+    init_db()
     data = request.get_json()  # get JSON data
 
     conn = sqlite3.connect(DB_PATH)  # connect DB
@@ -79,6 +81,7 @@ def add_player():
 # update player in DB (UPDATE)
 @app.route('/players/<int:id>', methods=['PUT'])
 def update_player(id):
+    init_db()
     data = request.get_json()  # get JSON data
 
     conn = sqlite3.connect(DB_PATH)  # connect DB
@@ -102,6 +105,7 @@ def update_player(id):
 # delete player (DELETE)
 @app.route('/players/<int:id>', methods=['DELETE'])
 def delete_player(id):
+    init_db()
     conn = sqlite3.connect(DB_PATH)  # connect DB
     cursor = conn.cursor()
 
