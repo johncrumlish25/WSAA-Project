@@ -16,6 +16,31 @@ def home():
 # GET all players
 @app.route('/players', methods=['GET'])
 def get_players():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    # create table every time (guaranteed fix)
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS players (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            goals INTEGER NOT NULL
+        )
+    ''')
+
+    cursor.execute("SELECT * FROM players")
+    rows = cursor.fetchall()
+
+    conn.close()
+
+    players = []
+    for row in rows:
+        players.append({
+            "id": row[0],
+            "name": row[1],
+            "goals": row[2]
+        })
+
     return jsonify(players)
 
 # ADD player
