@@ -1,143 +1,59 @@
 # Flask App
 # Author: John Crumlish
 
-import os
 from flask import Flask, jsonify, request, render_template
-import sqlite3  # database
 
-DB_PATH = "/home/johncrumlish/database.db"
-
-def init_db():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-
-    cursor.execute('''   
-        CREATE TABLE IF NOT EXISTS players (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            goals INTEGER NOT NULL
-        )
-    ''')
-
-    conn.commit()
-    conn.close()
-
-# create app
 app = Flask(__name__)
 
-# home route
+# Temporary in-memory storage
+players = []
+
+# Home route
 @app.route('/')
 def home():
     return render_template('index.html')
 
-# get players from DB (READ)
-@app.route('/players', methods=['GET'])  
+# GET all players
+@app.route('/players', methods=['GET'])
 def get_players():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
+    return jsonify(players)
 
-    # FORCE create table every time
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS players (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            goals INTEGER NOT NULL
-        )
-    ''')
-
-    cursor.execute("SELECT * FROM players")
-    rows = cursor.fetchall()
-
-    conn.close()
-
-    players = []
-    for row in rows:
-        players.append({
-            "id": row[0],
-            "name": row[1],
-            "goals": row[2]
-        })
-
-    return jsonify(players) # return JSON response
-
-# add new player to DB (CREATE)
+# ADD player
 @app.route('/players', methods=['POST'])
 def add_player():
     data = request.get_json(force=True)
 
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS players (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            goals INTEGER NOT NULL
-        )
-    ''')
-
-    # existing insert
-    cursor.execute(
-        "INSERT INTO players (name, goals) VALUES (?, ?)",
-        (data["name"], data["goals"])
-    )
-
-    conn.commit()
-
-    new_id = cursor.lastrowid
-
-    conn.close()
-
-    return jsonify({
-        "id": new_id,
+    new_player = {
+        "id": len(players) + 1,
         "name": data["name"],
         "goals": data["goals"]
-    })
+    }
 
-# update player in DB (UPDATE)
+    players.append(new_player)
+    return jsonify(new_player)
+
+# UPDATE player
 @app.route('/players/<int:id>', methods=['PUT'])
 def update_player(id):
-    init_db()
-    data = request.get_json(force=True)  # get JSON data
+    data = request.get_json(force=True)
 
-    conn = sqlite3.connect(DB_PATH)  # connect DB
-    cursor = conn.cursor()
+    for player in players:
+        if player["id"] == id:
+            player["name"] = data["name"]
+            player["goals"] = data["goals"]
+            return jsonify(player)
 
-    cursor.execute(
-        "UPDATE players SET name = ?, goals = ? WHERE id = ?",
-        (data["name"], data["goals"], id)
-    )
+    return jsonify({"error": "Player not found"})
 
-    conn.commit()  # save changes
-
-    conn.close()  # close DB
-
-    return jsonify({  # return updated player data
-        "id": id,
-        "name": data["name"],
-        "goals": data["goals"]
-    })
-
-# delete player (DELETE)
+# DELETE player
 @app.route('/players/<int:id>', methods=['DELETE'])
 def delete_player(id):
-    init_db()
-    conn = sqlite3.connect(DB_PATH)  # connect DB
-    cursor = conn.cursor()
+    for player in players:
+        if player["id"] == id:
+            players.remove(player)
+            return jsonify({"message": "Player deleted"})
 
-    cursor.execute(
-        "DELETE FROM players WHERE id = ?",  # delete row
-        (id,)
-    )
-
-    conn.commit()  # save changes
-
-    conn.close()  # close DB
-
-    return jsonify({"message": "Player deleted"})  # confirmation
-
-# run app
-init_db()  # create database when app starts
+    return jsonify({"error": "Player not found"})
 
 if __name__ == '__main__':
     app.run(debug=True)
