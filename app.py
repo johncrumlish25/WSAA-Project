@@ -5,11 +5,10 @@ import os
 from flask import Flask, jsonify, request, render_template
 import sqlite3  # database
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, "database.db")
+DB_PATH = "/home/johncrumlish/database.db"
 
 def init_db():
-    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
     cursor.execute('''   
@@ -34,7 +33,7 @@ def home():
 # get players from DB (READ)
 @app.route('/players', methods=['GET'])  
 def get_players():
-    conn = sqlite3.connect(DB_PATH, check_same_thread=False)  # connect DB
+    conn = sqlite3.connect(DB_PATH)  # connect DB
     cursor = conn.cursor()
 
     cursor.execute("SELECT * FROM players")  # query table
@@ -57,7 +56,7 @@ def get_players():
 def add_player():
     data = request.get_json()  # get JSON data
 
-    conn = sqlite3.connect(DB_PATH, check_same_thread=False)  # connect DB
+    conn = sqlite3.connect(DB_PATH)  # connect DB
     cursor = conn.cursor()
 
     cursor.execute(
@@ -82,7 +81,7 @@ def add_player():
 def update_player(id):
     data = request.get_json()  # get JSON data
 
-    conn = sqlite3.connect(DB_PATH, check_same_thread=False)  # connect DB
+    conn = sqlite3.connect(DB_PATH)  # connect DB
     cursor = conn.cursor()
 
     cursor.execute(
@@ -103,7 +102,7 @@ def update_player(id):
 # delete player (DELETE)
 @app.route('/players/<int:id>', methods=['DELETE'])
 def delete_player(id):
-    conn = sqlite3.connect(DB_PATH, check_same_thread=False)  # connect DB
+    conn = sqlite3.connect(DB_PATH)  # connect DB
     cursor = conn.cursor()
 
     cursor.execute(
