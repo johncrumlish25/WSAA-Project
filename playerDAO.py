@@ -1,20 +1,23 @@
 import sqlite3
 from os import path
 
+# Get the directory where this file is located
 ROOT = path.dirname(path.realpath(__file__))
+
+# Create full path to the SQLite database file
 DB_PATH = path.join(ROOT, "database.db")
 
 class PlayerDAO:
 
-    def getConnection(self):
+    def getConnection(self):              # Connection to DB
         conn = sqlite3.connect(DB_PATH)
         return conn
 
-    def getAll(self):
+    def getAll(self):                     # Retrieve all players from DB
     conn = self.getConnection()
     cursor = conn.cursor()
 
-    # CREATE TABLE FIRST
+    # Ensure the players table exists before querying
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS players (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -23,12 +26,12 @@ class PlayerDAO:
         )
     ''')
 
-    conn.commit()   # 👈 THIS LINE IS CRITICAL
+    conn.commit()  
 
     cursor.execute("SELECT * FROM players")
     results = cursor.fetchall()
 
-    players = []
+    players = []    # Convert rows into a list of dictionaries
     for row in results:
         players.append({
             "id": row[0],
@@ -39,7 +42,7 @@ class PlayerDAO:
     conn.close()
     return players
 
-    def create(self, player):
+    def create(self, player):              # Insert a new player
         conn = self.getConnection()
         cursor = conn.cursor()
 
@@ -65,6 +68,7 @@ class PlayerDAO:
         conn = self.getConnection()
         cursor = conn.cursor()
 
+        # Update player details
         cursor.execute(
             "UPDATE players SET name = ?, goals = ? WHERE id = ?",
             (player["name"], player["goals"], id)
@@ -73,10 +77,12 @@ class PlayerDAO:
         conn.commit()
         conn.close()
 
+    # Delete a player by ID
     def delete(self, id):
         conn = self.getConnection()
         cursor = conn.cursor()
 
+    # Remove player
         cursor.execute("DELETE FROM players WHERE id = ?", (id,))
         conn.commit()
         conn.close()
