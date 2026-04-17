@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS players;
+
+CREATE TABLE players (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(250),
+    goals INTEGER
+);
