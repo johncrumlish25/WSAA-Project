@@ -1,0 +1,3 @@
+mysql = {
+    "database": "database.db"
+}
