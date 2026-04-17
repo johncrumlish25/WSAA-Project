@@ -1,11 +1,12 @@
 # Flask App
 # Author: John Crumlish
 
-import os
+from os import path
 from flask import Flask, jsonify, request, render_template
 import sqlite3  # database
 
-DB_PATH = "/home/johncrumlish/WSAA-Project/database.db"
+ROOT = path.dirname(path.realpath(__file__))
+DB_PATH = path.join(ROOT, "database.db")
 
 app = Flask(__name__)
 
