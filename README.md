@@ -22,12 +22,15 @@ The application allows users to perform CRUD (Create, Read, Update, Delete) oper
 - Bootstrap
 
 ## Project Structure
-
-- **app.py**  
-- **database.db** (ignored in Git)  
-- **README.md** 
+- **app.py** – Flask application and API routes  
+- **playerDAO.py** – Handles all database operations  
+- **schema.sql** – Defines the database structure  
+- **createschema.py** – Script to initialise the database  
+- **dbconfig.py** – Stores database configuration  
 - **templates/**
-  - index.html  
+  - index.html – Frontend interface  
+- **database.db** – SQLite database (ignored in Git)  
+- **README.md**
 
 ## How to Run the Project
 ##### 1. Clone the repository
@@ -39,13 +42,17 @@ cd WSAA-Project
 ##### 3. Install Flask
 pip install flask
 
-##### 4. Run the application
+##### 4. Initialise the database
+python createschema.py
+
+##### 5. Run the application
 python app.py
 
-##### 5. Open in browser
+##### 6. Open in browser
 http://127.0.0.1:5000/
 
 ## Notes
-- Data is stored in a SQLite database (`database.db`)
-- The database file is excluded from version control using `.gitignore`
-- The application runs locally and does not require external hosting
+- The database schema is defined in `schema.sql` and created using `createschema.py`
+- SQLite is used for data storage
+- The database file (`database.db`) is excluded from version control using `.gitignore`
+- The application can be run locally or deployed on PythonAnywhere
