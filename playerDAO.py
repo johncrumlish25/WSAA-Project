@@ -11,30 +11,33 @@ class PlayerDAO:
         return conn
 
     def getAll(self):
-        conn = self.getConnection()
-        cursor = conn.cursor()
+    conn = self.getConnection()
+    cursor = conn.cursor()
 
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS players (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                goals INTEGER NOT NULL
-            )
-        ''')
+    # CREATE TABLE FIRST
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS players (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            goals INTEGER NOT NULL
+        )
+    ''')
 
-        cursor.execute("SELECT * FROM players")
-        results = cursor.fetchall()
+    conn.commit()   # 👈 THIS LINE IS CRITICAL
 
-        players = []
-        for row in results:
-            players.append({
-                "id": row[0],
-                "name": row[1],
-                "goals": row[2]
-            })
+    cursor.execute("SELECT * FROM players")
+    results = cursor.fetchall()
 
-        conn.close()
-        return players
+    players = []
+    for row in results:
+        players.append({
+            "id": row[0],
+            "name": row[1],
+            "goals": row[2]
+        })
+
+    conn.close()
+    return players
 
     def create(self, player):
         conn = self.getConnection()
