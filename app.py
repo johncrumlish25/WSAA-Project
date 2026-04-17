@@ -21,6 +21,7 @@ def get_players():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
+    # CREATE TABLE FIRST
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS players (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -29,7 +30,7 @@ def get_players():
         )
     ''')
 
-    conn.commit() 
+    conn.commit()   
 
     cursor.execute("SELECT * FROM players")
     rows = cursor.fetchall()
@@ -63,7 +64,7 @@ def add_player():
         )
     ''')
 
-    conn.commit() 
+    conn.commit()   
 
     cursor.execute(
         "INSERT INTO players (name, goals) VALUES (?, ?)",
@@ -71,15 +72,9 @@ def add_player():
     )
 
     conn.commit()
-
-    new_id = cursor.lastrowid
     conn.close()
 
-    return jsonify({
-        "id": new_id,
-        "name": data["name"],
-        "goals": data["goals"]
-    })
+    return jsonify({"message": "Player added"})
 
 # UPDATE player
 @app.route('/players/<int:id>', methods=['PUT'])
