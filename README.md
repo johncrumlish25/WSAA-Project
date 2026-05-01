@@ -32,6 +32,10 @@ The application allows users to perform CRUD (Create, Read, Update, Delete) oper
 - **database.db** – SQLite database (ignored in Git)  
 - **README.md**
 
+## Live Demo
+You can access the deployed web application here:  
+https://johncrumlish.pythonanywhere.com/
+
 ## How to Run the Project
 ##### 1. Clone the repository
 git clone https://github.com/johncrumlish25/WSAA-Project.git
